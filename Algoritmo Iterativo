@@ -1,0 +1,14 @@
+población = 100000
+infectados = 1
+sanos = población - infectados
+muertos = 0
+día = 1
+
+if existen_sanos:
+    mostrar estado a la hora (dia, sanos, infectados, muertos)
+    Actualizar muertos (si día >= 3)
+    Calcular y actualizar nuevos infectados
+    Actualizar sanos e infectados
+    Avanzar al siguiente día
+
+Mostrar tiempo de ejecución

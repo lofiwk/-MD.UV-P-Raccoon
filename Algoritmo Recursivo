@@ -1,0 +1,15 @@
+población = 100000
+infectados = 1
+sanos = población - infectados
+muertos = 0
+día = 1
+
+Funcion_muy_creativa(día, sanos, infectados, muertos):
+    Si no hay sanos, mostrar estado final y terminar
+    Mostrar estado actual
+    Actualizar muertos (si día >= 3)
+    Calcular y actualizar nuevos infectados
+    Actualizar sanos e infectados
+    Llamar a simular(día + 1)
+simular(1, sanos, infectados, muertos)
+Mostrar tiempo de ejecución y generar gráfica
