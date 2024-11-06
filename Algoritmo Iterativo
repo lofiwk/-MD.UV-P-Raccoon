@@ -2,36 +2,58 @@
 import time
 import matplotlib.pyplot as plt
 
-#Parametros del experimento
+# Parámetros del experimento
 poblacionTotal = 100000
 infectadosIniciales = 1
 capacidadContagio = 3
 porcentajeMortalidad = 0.1
 
 def simular_propagacion_virusT_iterativamente():
-  sanos = poblacionTotal - infectadosIniciales
-  infectados = infectadosIniciales
-  muertos = 0
-  estadisticasDiarias = []
+    sanos = poblacionTotal - infectadosIniciales
+    infectados = infectadosIniciales
+    muertos = 0
+    estadisticasDiarias = []
 
-  inicioTiempo = time.time()
-  dia = 1
+    inicioTiempo = time.time()
+    dia = 1
 
-  while sanos > 0:
-    nuevosInfectados = min(sanos, infectados * capacidadContagio)
-    nuevosMuertos = int(infectados * porcentajeMortalidad) if dia >= 3 else 0 #A partir del día 3 un porcentaje de infectado muere
-    sanos = sanos - nuevosInfectados
-    infectados = infectados + nuevosInfectados - nuevosMuertos
-    muertos = muertos + nuevosMuertos
+    while sanos > 0:
+        nuevosInfectados = min(sanos, infectados * capacidadContagio)
+        nuevosMuertos = int(infectados * porcentajeMortalidad) if dia >= 3 else 0 # A partir del día 3 un porcentaje de infectado muere
+        sanos = sanos - nuevosInfectados
+        infectados = infectados + nuevosInfectados - nuevosMuertos
+        muertos = muertos + nuevosMuertos
 
-    print(f"Día {dia}: Habitantes sanos: {sanos}, Cantidad de infectados: {infectados}, Cantidad de muertos: {muertos}")
+        # Guardar las estadísticas diarias
+        estadisticasDiarias.append((dia, sanos, infectados, muertos))
 
-    dia += 1
+        # Mostrar estadísticas en consola
+        print(f"Día {dia}: Habitantes sanos: {sanos}, Cantidad de infectados: {infectados}, Cantidad de muertos: {muertos}")
 
-  tiempoEjecucion = time.time() - inicioTiempo
-  print(f"Tiempo de ejecución iterativo: {tiempoEjecucion:.5f} segundos")
+        dia += 1
 
-  return estadisticasDiarias
+    tiempoEjecucion = time.time() - inicioTiempo
+    print(f"Tiempo de ejecución iterativo: {tiempoEjecucion:.5f} segundos")
 
-#Ejecutar función
-simular_propagacion_virusT_iterativamente()
+    return estadisticasDiarias
+
+def graficar(estadisticasDiarias):
+    dias = [estadistica[0] for estadistica in estadisticasDiarias]
+    sanos = [estadistica[1] for estadistica in estadisticasDiarias]
+    infectados = [estadistica[2] for estadistica in estadisticasDiarias]
+    muertos = [estadistica[3] for estadistica in estadisticasDiarias]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(dias, sanos, label="Sanos", marker='o')
+    plt.plot(dias, infectados, label="Infectados", marker='o')
+    plt.plot(dias, muertos, label="Muertos", marker='o')
+    plt.xlabel("Días de la simulación")
+    plt.ylabel("Cantidad de habitantes")
+    plt.title("Comportamiento de propagación del Virus-T")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Ejecutar función de simulación y graficar
+estadisticasDiarias = simular_propagacion_virusT_iterativamente()
+graficar(estadisticasDiarias)
