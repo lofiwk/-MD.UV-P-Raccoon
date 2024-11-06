@@ -1,14 +1,37 @@
-población = 100000
-infectados = 1
-sanos = población - infectados
-muertos = 0
-día = 1
+# Importar librerías
+import time
+import matplotlib.pyplot as plt
 
-if existen_sanos:
-    mostrar estado a la hora (dia, sanos, infectados, muertos)
-    Actualizar muertos (si día >= 3)
-    Calcular y actualizar nuevos infectados
-    Actualizar sanos e infectados
-    Avanzar al siguiente día
+#Parametros del experimento
+poblacionTotal = 100000
+infectadosIniciales = 1
+capacidadContagio = 3
+porcentajeMortalidad = 0.1
 
-Mostrar tiempo de ejecución
+def simular_propagacion_virusT_iterativamente():
+  sanos = poblacionTotal - infectadosIniciales
+  infectados = infectadosIniciales
+  muertos = 0
+  estadisticasDiarias = []
+
+  inicioTiempo = time.time()
+  dia = 1
+
+  while sanos > 0:
+    nuevosInfectados = min(sanos, infectados * capacidadContagio)
+    nuevosMuertos = int(infectados * porcentajeMortalidad) if dia >= 3 else 0 #A partir del día 3 un porcentaje de infectado muere
+    sanos = sanos - nuevosInfectados
+    infectados = infectados + nuevosInfectados - nuevosMuertos
+    muertos = muertos + nuevosMuertos
+
+    print(f"Día {dia}: Habitantes sanos: {sanos}, Cantidad de infectados: {infectados}, Cantidad de muertos: {muertos}")
+
+    dia += 1
+
+  tiempoEjecucion = time.time() - inicioTiempo
+  print(f"Tiempo de ejecución iterativo: {tiempoEjecucion:.5f} segundos")
+
+  return estadisticasDiarias
+
+#Ejecutar función
+simular_propagacion_virusT_iterativamente()

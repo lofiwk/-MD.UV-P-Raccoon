@@ -1,15 +1,52 @@
-población = 100000
-infectados = 1
-sanos = población - infectados
-muertos = 0
-día = 1
+# Importar librerías
+import time
+import matplotlib.pyplot as plt
 
-Funcion_muy_creativa(día, sanos, infectados, muertos):
-    Si no hay sanos, mostrar estado final y terminar
-    Mostrar estado actual
-    Actualizar muertos (si día >= 3)
-    Calcular y actualizar nuevos infectados
-    Actualizar sanos e infectados
-    Llamar a simular(día + 1)
-simular(1, sanos, infectados, muertos)
-Mostrar tiempo de ejecución y generar gráfica
+#Parametros del experimento
+poblacionTotal = 100000
+infectadosIniciales = 1
+capacidadContagio = 3
+porcentajeMortalidad = 0.1
+
+def simular_propagacion_virusT_recursivamente(dia, sanos, infectados, muertos, estadisticasDiarias=None):
+  if estadisticasDiarias is None:
+    estadisticasDiarias = []
+  if sanos == 0:
+    return estadisticasDiarias #Si no hay sanos, se detiene la simulación
+  #Cálculo de infectados y nuevos muertos
+  nuevosInfectados = min(sanos, infectados * capacidadContagio)
+  nuevosMuertos = int(infectados * porcentajeMortalidad) if dia >= 3 else 0 #A partir del día 3 un porcentaje de infectado muere
+  #Actualización de valores
+  sanos = sanos - nuevosInfectados
+  infectados = infectados + nuevosInfectados - nuevosMuertos
+  muertos = muertos + nuevosMuertos
+
+  #Se almacenan las estadisticas diarias
+  estadisticasDiarias.append((dia, sanos, infectados, muertos))
+  print(f"Día {dia}: Habitantes sanos: {sanos}, Cantidad de infectados: {infectados}, Cantidad de muertos: {muertos}")
+
+  return simular_propagacion_virusT_recursivamente(dia + 1, sanos, infectados, muertos, estadisticasDiarias)
+
+
+inicioTiempo = time.time()
+#Ejecutar función y almacenar datos para generar gráfico
+resultados = simular_propagacion_virusT_recursivamente(1, poblacionTotal - infectadosIniciales, infectadosIniciales, 0)
+tiempoEjecucion = time.time() - inicioTiempo #Calcular tiempo de ejcución antes del gráfico
+print(f"Tiempo de ejecución iterativo: {tiempoEjecucion:.5f} segundos")
+
+#Función para graficar el comportamiento
+def graficar_comportamiento_propagacion(estadisticasDiarias):
+  dias = [estadistica[0] for estadistica in estadisticasDiarias]
+  infectados = [estadistica[2] for estadistica in estadisticasDiarias]
+
+  plt.figure(figsize=(10,6))
+  plt.plot(dias, infectados, label="Infectados", marker= 'o')
+  plt.xlabel("Días de  la simulación")
+  plt.ylabel("Cantidad de infectados")
+  plt.title("Comportamiento de propagación del virusT")
+  plt.legend()
+  plt.grid(True)
+  plt.show()
+
+#Gráfico con los resultados
+graficar_comportamiento_propagacion(resultados)
